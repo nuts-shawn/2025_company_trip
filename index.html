@@ -1,268 +1,328 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
-
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>簡易點名系統</title>
-    <meta name="theme-color" content="3B4252" />
-    <style>
-        h1 {
-            /* 標題顏色 */
-            color: var(--nord7)
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2025 豐趣國內員旅點名系統</title>
+  <style>
+    :root {
+      --bg: #2E3440;
+      --panel: #3B4252;
+      --accent: #88C0D0;
+      --text: #ECEFF4;
+      --success: #A3BE8C;
+      --danger: #BF616A;
+      --line: #4C566A;
+      --highlight: #8FBCBB;
+    }
 
-        body {
-            /* 背景顏色 */
-            background-color: var(--nord0)
-        }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: "微軟正黑體", sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      flex-direction: column;
+    }
 
-        body {
-            /* 可選顏色 */
-            --nord0: #2E3440;
-            --nord1: #3B4252;
-            --nord2: #434C5E;
-            --nord3: #4C566A;
-            --nord4: #D8DEE9;
-            --nord5: #E5E9F0;
-            --nord6: #ECEFF4;
-            --nord7: #8FBCBB;
-            --nord8: #88C0D0;
-            --nord9: #81A1C1;
-            --nord10: #5E81AC;
-            --nord11: #BF616A;
-            --nord12: #D08770;
-            --nord13: #EBCB8B;
-            --nord14: #A3BE8C;
-            --nord15: #B48EAD;
-            --black: #000;
-            --line: #4C566A
-        }
+    main {
+      background: var(--panel);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    }
 
-        main,
-        nav {
-            display: flex
-        }
+    h1 {
+      color: var(--accent);
+      text-align: center;
+      margin-bottom: 1rem;
+    }
 
-        .call button,
-        button:hover {
-            background-color: var(--nord2)
-        }
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 1.2rem;
+    }
 
-        button,
-        section>div {
-            background-color: var(--nord1);
-            box-shadow: rgba(0, 0, 0, .2) 0 0 .5rem
-        }
+    button {
+      flex: 1;
+      padding: 0.5rem 0.8rem;
+      border: none;
+      border-radius: 0.5rem;
+      background: var(--line);
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+    }
 
-        main,
-        section>div {
-            padding: 1rem;
-            width: 100%
-        }
+    button:hover {
+      background: var(--accent);
+      color: var(--bg);
+    }
 
-        footer,
-        footer a {
-            color: var(--nord4)
-        }
+    /* 🌟 高亮樣式 */
+    button.active {
+      background: var(--highlight);
+      color: var(--bg);
+      font-weight: bold;
+      box-shadow: 0 0 5px var(--accent);
+    }
 
-        .search button,
-        button,
-        input,
-        section>div {
-            box-shadow: rgba(0, 0, 0, .2) 0 0 .5rem
-        }
+    section {
+      text-align: center;
+    }
 
-        body,
-        button,
-        h2,
-        html {
-            text-align: center
-        }
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0.5rem 0;
+    }
 
-        * {
-            padding: 0;
-            margin: 0;
-            box-sizing: border-box;
-            font-family: Arial, "微軟正黑體", Helvetica, sans-serif;
-            color: var(--nord6)
-        }
+    li {
+      background: var(--line);
+      margin: 0.3rem 0;
+      padding: 0.6rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
 
-        body,
-        html {
-            min-height: 100%
-        }
+    li.called {
+      background-color: var(--success);
+      color: var(--bg);
+    }
 
-        main {
-            flex-direction: column;
-            height: 100vh;
-            height: 100dvh;
-            max-width: 500px;
-            margin: 0 auto
-        }
+    li:hover {
+      filter: brightness(1.15);
+    }
 
-        nav {
-            justify-content: space-between
-        }
+    #status {
+      color: var(--accent);
+      font-size: 0.9rem;
+      margin-bottom: 0.8rem;
+    }
 
-        button {
-            display: block;
-            height: 50px;
-            width: calc(1/3*100% - 1rem);
-            line-height: 50px;
-            border-radius: 1rem;
-            text-decoration: none;
-            border: none;
-            cursor: pointer;
-            transition: background-color .2s ease-in-out
-        }
+    /* 📍 新增清除按鈕區塊 */
+    .bottom-actions {
+      display: flex;
+      justify-content: center;
+      margin-top: 1rem;
+    }
 
-        #call,
-        .search,
-        footer {
-            display: flex
-        }
+    #clear-btn {
+      background: var(--danger);
+      color: var(--text);
+      font-weight: bold;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 0.5rem;
+      transition: all 0.2s;
+    }
 
-        #call button {
-            width: calc(1/4*100% - 1rem);
-            margin: .5rem
-        }
+    #clear-btn:hover {
+      background: #D46A6A;
+      color: #fff;
+      box-shadow: 0 0 5px var(--danger);
+    }
 
-        button:hover {
-            filter: brightness(1.2)
-        }
+    footer {
+      margin-top: 1.5rem;
+      text-align: right;
+      font-size: 0.9rem;
+      color: var(--accent);
+    }
 
-        button:active {
-            background-color: var(--nord3);
-            filter: brightness(1.5)
-        }
-
-        section {
-            flex-grow: 1;
-            margin: 1rem 0;
-            position: relative
-        }
-
-        footer {
-            justify-content: flex-end;
-            align-items: flex-end
-        }
-
-        section>div {
-            border-radius: 1rem;
-            overflow-x: hidden;
-            overflow-y: auto;
-            position: absolute;
-            height: 100%;
-            transition: opacity .5s ease-in-out
-        }
-
-        #add,
-        #history {
-            opacity: 0
-        }
-
-        #call {
-            z-index: 2;
-            flex-wrap: wrap;
-            justify-content: space-between
-        }
-
-        .search {
-            justify-content: center;
-            align-items: center
-        }
-
-        .search button,
-        input {
-            height: 2rem;
-            width: 50%;
-            border-radius: .5rem;
-            border: transparent;
-            padding: 0 1rem;
-            background-color: var(--nord3);
-            color: var(--nord4)
-        }
-
-        h2,
-        table {
-            width: 100%
-        }
-
-        input:focus {
-            outline: transparent
-        }
-
-        .search button {
-            margin-left: 1rem;
-            width: auto;
-            line-height: 100%
-        }
-
-        table {
-            border-collapse: collapse;
-            margin-top: 1rem
-        }
-
-        tr {
-            border-bottom: 1px solid var(--line)
-        }
-
-        td {
-            padding: .5rem
-        }
-
-        h2 {
-            margin-top: 2rem;
-            font-weight: 600
-        }
-
-        #status {
-            margin: .5rem 0 1rem;
-            color: var(--nord13);
-            font-size: 1.3rem
-        }
-    </style>
-</head>
-
-<body>
+    h3 {
+      color: var(--accent);
+      margin-top: 1rem;
+    }
+  </style>
+  </head>
+  
+  <body>
     <main>
-        <h1>簡易點名系統</h1>
-        <h2 id="status">歡迎使用</h2>
-        <nav>
-            <button onclick="searchA()">查詢紀錄</button><button onclick="callA()">點名</button><button onclick="addA()">新增學生</button>
-            </nav>
-            <section>
-                <div id="history">
-                    <div class="search">
-                    <input type="text"><button>搜尋</button>
-                    </div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <td>時間</td>
-                                <td>剩下課堂</td>
-                            </tr>
-                        </thead>
-                    <tbody>
-                    </tbody>
-                    </table>
-                    </div>
-                    <div id="call">
-                        <h2>載入中</h2>
-                    </div>
-                    <div id="add">
-                <div class="search"><input type="text"><button>新增</button></div>
-                </div>
-                </section>
-        <footer><a href="edit-mr.github.io/">毛哥EM</a>製作 | <a href="https://em-tec.github.io/post/rol-call">教學</a></footer>
-        </main>
-        <script>
-            //部屬連結放這裡
-                var url = "https://script.google.com/macros/s/AKfycbyrD2yygy3nEXbroLyM5dwWtqbVqjZFzpoE8JemosJDAMZGTUvTm3ODoKY1YFAAmO5rBg/exec";
-                const [history, call, add] = ["history", "call", "add"].map(t => document.getElementById(t)), searchA = () => { history.style.opacity = 1, history.style.zIndex = 2, call.style.opacity = add.style.opacity = 0, call.style.zIndex = add.style.zIndex = 1 }, callA = () => { history.style.opacity = add.style.opacity = 0, history.style.zIndex = add.style.zIndex = 1, call.style.opacity = 1, call.style.zIndex = 2 }, addA = () => { history.style.opacity = call.style.opacity = 0, history.style.zIndex = call.style.zIndex = 1, add.style.opacity = 1, add.style.zIndex = 2 }; fetch(url + "?type=list").then(t => t.json()).then(t => { let e = document.getElementById("call"); e.innerHTML = "", t.forEach((t, n) => { let a = document.createElement("button"); a.textContent = t.name, a.id = `student-${n + 1}`, a.addEventListener("click", () => { rollCall(t.name, t.left, n + 1) }), e.appendChild(a) }) }).catch(t => console.error(t)); const status = document.getElementById("status"); function rollCall(t, e, n) { status.innerHTML = `${t} 點名中...`; var a = new Date, a = a.toLocaleString("zh-TW", { year: "numeric", month: "2-digit", day: "2-digit", hour: "numeric", minute: "numeric", second: "numeric", hour12: !0 }).replace("-", "/").replace(" ", " "); fetch(url + `?type=call&name=${t}&time=${a}&remain=${e}`).then(a => { a.ok ? (status.innerHTML = `${t} 已點名成功！剩餘課堂：${e - 1}`, document.getElementById("student-" + n).style.backgroundColor = "var(--nord14)") : (status.innerHTML = `${t} 已點名失敗！剩餘課堂：${e}`, document.getElementById("student-" + n).style.backgroundColor = "var(--nord11)") }).catch(t => { status.innerHTML = `發生錯誤：${t}` }) } const searchBtn = document.querySelector("#history button"), searchInput = document.querySelector("#history input"), historyTableBody = document.querySelector("#history tbody"); searchBtn.addEventListener("click", () => { status.innerHTML = "搜尋中..."; let t = searchInput.value, e = `${e}?type=search&name=${encodeURIComponent(t)}`; fetch(e).then(t => t.json()).then(t => { let e = document.querySelector("#history table tbody"); e.innerHTML = "", t.forEach(t => { let n = document.createElement("tr"), a = document.createElement("td"), l = document.createElement("td"); var r = new Date(t.time); a.textContent = r.toLocaleString("zh-TW", { year: "numeric", month: "2-digit", day: "2-digit", hour: "numeric", minute: "numeric", second: "numeric", hour12: !0 }).replace("-", "/").replace(" ", " "), l.textContent = t.left, n.appendChild(a), n.appendChild(l), e.appendChild(n), status.innerHTML = "搜尋完成" }) }).catch(t => status.innerHTML = t) }); const addBtn = document.querySelector("#add button"), addInput = document.querySelector("#add input"); addBtn.addEventListener("click", () => { let t = addInput.value; t && (status.innerHTML = "新增中...", fetch(`${url}?type=new&name=${encodeURIComponent(t)}`).then(t => status.innerHTML = "新增成功").catch(t => { status.innerHTML = t })) });
+      <h1>2025 豐趣國內員旅點名系統</h1>
+  
+      <nav>
+        <button id="listA-btn">遊覽車</button>
+        <button id="listB-btn">全員名單</button>
+      </nav>
+  
+      <section>
+        <h2 id="list-title">遊覽車清單</h2>
+        <p id="status"></p>
+        <h3>✅ 已點名</h3>
+        <ul id="present-list"></ul>
+        <h3>🕒 未點名</h3>
+        <ul id="absent-list"></ul>
+  
+        <div class="bottom-actions">
+          <button id="clear-btn">🧹 清除店名</button>
+        </div>
+      </section>
+    </main>
+  
+    <script>
+      const busList = [
+        "裘以嘉",
+        "黃程韋",
+        "林琬若",
+        "黃麗惠",
+        "林岳穎",
+        "林彥甫",
+        "林書瑀",
+        "何沛瑄",
+        "李雅媛",
+        "邱易賦",
+        "張芷瑜",
+        "莊宗庭",
+        "邱盈嘉",
+        "林書儀",
+        "葉志翔",
+        "葉昕霏",
+        "葉宥承",
+        "羅湘蓉",
+        "陳昱穎",
+        "游志豪",
+        "江芸",
+        "曾姳璇",
+        "李維軒"
+      ];
+
+                const allList = [
+                  "裘以嘉",
+                  "蔡豐全",
+                  "蔡孟庭",
+                  "余宛如",
+                  "徐文彥",
+                  "徐位理",
+                  "徐笠雅",
+                  "黃程韋",
+                  "邵亮惟",
+                  "邵奎凱",
+                  "林琬若",
+                  "黃麗惠",
+                  "林岳穎",
+                  "林彥甫",
+                  "林書瑀",
+                  "何沛瑄",
+                  "李雅媛",
+                  "邱易賦",
+                  "鄒仕樺",
+                  "林辰映",
+                  "陳國維",
+                  "陳歆沛",
+                  "陳立洵",
+                  "張芷瑜",
+                  "莊宗庭",
+                  "邱盈嘉",
+                  "林書儀",
+                  "葉志翔",
+                  "葉昕霏",
+                  "葉宥承",
+                  "林晉賢",
+                  "羅湘蓉",
+                  "陳昱穎",
+                  "游志豪",
+                  "江芸",
+                  "曾姳璇",
+                  "李維軒"
+                ];
+
+                const lists = {
+                  A: busList,
+                  B: allList
+                };
+
+                let currentList = "A";
+
+                const btnA = document.getElementById("listA-btn");
+                const btnB = document.getElementById("listB-btn");
+
+                function getCalledData() {
+                  return JSON.parse(localStorage.getItem("calledData") || "{}");
+        }
+
+                function saveCalledData(data) {
+                  localStorage.setItem("calledData", JSON.stringify(data));
+        }
+
+                function renderList(listKey) {
+                  const data = getCalledData();
+                  const called = data[listKey] || [];
+                  const presentList = document.getElementById("present-list");
+                  const absentList = document.getElementById("absent-list");
+                  const title = document.getElementById("list-title");
+                  const status = document.getElementById("status");
+
+                const displayName = listKey === "A" ? "遊覽車" : "全員名單";
+                title.textContent = displayName;
+                presentList.innerHTML = "";
+                absentList.innerHTML = "";
+
+                const names = lists[listKey];
+                const total = names.length;
+                const count = called.length;
+                status.textContent = `已點名人數： ${count} / 未點名人數： ${total - count}`;
+
+                names.forEach(name => {
+                  const li = document.createElement("li");
+                  li.textContent = name;
+                  if (called.includes(name)) {
+                    li.classList.add("called");
+                    li.addEventListener("click", () => toggleCall(listKey, name, false));
+                    presentList.appendChild(li);
+                  } else {
+                    li.addEventListener("click", () => toggleCall(listKey, name, true));
+                    absentList.appendChild(li);
+        }
+              });
+
+                updateActiveButton(listKey);
+        }
+
+                function toggleCall(listKey, name, markPresent) {
+                  const data = getCalledData();
+                  data[listKey] ??= [];
+
+                if (markPresent) {
+                  if (!data[listKey].includes(name)) data[listKey].push(name);
+                } else {
+                  data[listKey] = data[listKey].filter(n => n !== name);
+        }
+
+                saveCalledData(data);
+                renderList(listKey);
+        }
+
+                document.getElementById("clear-btn").addEventListener("click", () => {
+                  const data = getCalledData();
+                  delete data[currentList];
+                  saveCalledData(data);
+                  renderList(currentList);
+                  alert(`已清除「${currentList === 'A' ? '遊覽車' : '全員名單'}」的點名紀錄！`);
+                });
+
+                btnA.addEventListener("click", () => {
+                  currentList = "A";
+                  renderList("A");
+                });
+                btnB.addEventListener("click", () => {
+                  currentList = "B";
+                  renderList("B");
+                });
+
+                function updateActiveButton(listKey) {
+                  btnA.classList.toggle("active", listKey === "A");
+                  btnB.classList.toggle("active", listKey === "B");
+                }
+
+                renderList("A");
         </script>
 </body>
-
 </html>
